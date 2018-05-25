@@ -27,6 +27,7 @@ module.exports = function(app) {
 
 
   // API POST Requests
+
   // Below code handles when a user submits a form and thus submits data to the server.
   // In each of the below cases, when a user submits form data (a JSON object)
   // ...the JSON is pushed to the appropriate JavaScript array
@@ -38,10 +39,52 @@ module.exports = function(app) {
     // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body-parser middleware
-    if (friendsData.length < 5) {
-      friendsData.push(req.body);
-      res.json(true);
+    var body = req.body;
+    console.log(body);
+
+    var outside = [];
+    var outsideTwo = [];
+
+
+		for(var k = 0; k < friendsData.length; k++) {
+      var inside = []
+        for (var i = 0; i < body.scores.length; i++) {
+          var minus = Math.abs(friendsData[k].scores[i] - body.scores[i])
+          inside.push(minus)
+        }
+      outsideTwo.push(inside)
     }
+
+    // outside is the sum of difference comparing the new score with the friends data
+
+
+    for (var i = 0; i < outsideTwo.length; i++) {
+			// console.log(outsideTwo[i])
+			var sum = outsideTwo[i].reduce(function(all,item,index) {
+			return all+=item
+			}, 0)
+			// console.log(sum2)
+			outside.push(sum)
+    }
+    
+
+    var index = 0, lowest = outside[0]
+		for (var i = 0; i < outside.length; i++) {
+			if (outside[i] < lowest) {
+				lowest = outside[i]
+				index = i
+      }
+    }
+
+    console.log(index)
+		console.log(lowest)
+
+		res.json(friendsData[index])
+
+    // if (friendsData.length < 5) {
+    //   friendsData.push(req.body);
+    //   res.json(true);
+    // }
     // else {
     //   waitListData.push(req.body);
     //   res.json(false);
