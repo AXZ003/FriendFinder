@@ -4,7 +4,7 @@
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 // ===============================================================================
 
-var friendsData = require("../data/friends");
+var friendsData = require("../data/friends.js");
 // var waitListData = require("../data/waitlistData")
 
 
@@ -39,67 +39,53 @@ module.exports = function(app) {
     // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body-parser middleware
-    var body = req.body;
-    console.log(body);
 
-    var outside = [];
-    var outsideTwo = [];
+    var userData = req.body;
+    var userScores = userData.scores;
+    var totalDifference;
 
+    console.log(userData);
 
-		for(var k = 0; k < friendsData.length; k++) {
-      var inside = []
-        for (var i = 0; i < body.scores.length; i++) {
-          var minus = Math.abs(friendsData[k].scores[i] - body.scores[i])
-          inside.push(minus)
-        }
-      outsideTwo.push(inside)
-    }
-
-    // outside is the sum of difference comparing the new score with the friends data
+    var bestMatch = {
+      name: "",
+      photo: "",
+      friendDifference: Infinity
+    };
 
 
-    for (var i = 0; i < outsideTwo.length; i++) {
-			// console.log(outsideTwo[i])
-			var sum = outsideTwo[i].reduce(function(all,item,index) {
-			return all+=item
-			}, 0)
-			// console.log(sum2)
-			outside.push(sum)
-    }
-    
+    // Here we loop through all the friend possibilities in the database.
+    for (var i = 0; i < friendsData.length; i++) {
+      var currentFriend = friendsData[i];
+      totalDifference = 0;
 
-    var index = 0, lowest = outside[0]
-		for (var i = 0; i < outside.length; i++) {
-			if (outside[i] < lowest) {
-				lowest = outside[i]
-				index = i
+      // console.log(currentFriend.name);
+
+      // We then loop through all the scores of each friend
+      for (var j = 0; j < currentFriend.scores.length; j++) {
+        var currentFriendScore = currentFriend.scores[j];
+        var currentUserScore = userScores[j];
+
+        // We calculate the difference between the scores and sum them into the totalDifference
+        totalDifference += Math.abs(parseInt(currentUserScore) - parseInt(currentFriendScore));
+      }
+
+      // If the sum of differences is less then the differences of the current "best match"
+      if (totalDifference <= bestMatch.friendDifference) {
+        // Reset the bestMatch to be the new friend.
+        bestMatch.name = currentFriend.name;
+        bestMatch.photo = currentFriend.photo;
+        bestMatch.friendDifference = totalDifference;
       }
     }
 
-    console.log(index)
-		console.log(lowest)
+    // Finally save the user's data to the database (this has to happen AFTER the check. otherwise,
+    // the database will always return that the user is the user's best friend).
+    friends.push(userData);
 
-		res.json(friendsData[index])
+    // Return a JSON with the user's bestMatch. This will be used by the HTML in the next page
+    res.json(bestMatch);
 
-    // if (friendsData.length < 5) {
-    //   friendsData.push(req.body);
-    //   res.json(true);
-    // }
-    // else {
-    //   waitListData.push(req.body);
-    //   res.json(false);
-    // }
   });
 
-  // ---------------------------------------------------------------------------
-  // I added this below code so you could clear out the table while working with the functionality.
-  // Don"t worry about it!
 
-  app.post("/api/clear", function() {
-    // Empty out the arrays of data
-    friendsData = [];
-    // waitListData = [];
-
-    console.log(friendsData);
-  });
 };

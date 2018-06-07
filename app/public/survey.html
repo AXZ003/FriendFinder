@@ -10,7 +10,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 </head>
-<script src="./javascript/chosen.jquery.min.js"></script>
+<!-- <script src="./javascript/.jquery.min.js"></script> -->
 <body>
 	<div class="container">
 
@@ -121,7 +121,7 @@ for (var i = 0; i < questionsArray.length; i++) {
 	    	var userData = {
 	    		name: $("#name").val().trim(),
 	    		photo: $("#photo").val().trim(),
-	    		scores: [$("#q0").chosen().val(), $("#q1").chosen().val(), $("#q2").chosen().val(), $("#q3").chosen().val(), $("#q4").chosen().val(), $("#q5").chosen().val(), $("#q6").chosen().val(), $("#q7").chosen().val(), $("#q8").chosen().val() ]
+	    		scores: [$("#q0").val(), $("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val() ]
 	    	}
 	    	console.log(userData)
 
