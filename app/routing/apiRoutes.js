@@ -5,6 +5,7 @@
 // ===============================================================================
 
 var friendsData = require("../data/friends.js");
+console.log(friendsData);
 // var waitListData = require("../data/waitlistData")
 
 
@@ -42,9 +43,14 @@ module.exports = function(app) {
 
     var userData = req.body;
     var userScores = userData.scores;
+
+    // console.log(userScores);
+    // console.log(userData);
+
+
     var totalDifference;
 
-    console.log(userData);
+    // console.log(userData);
 
     var bestMatch = {
       name: "",
@@ -57,6 +63,8 @@ module.exports = function(app) {
     for (var i = 0; i < friendsData.length; i++) {
       var currentFriend = friendsData[i];
       totalDifference = 0;
+      console.log(i);
+      console.log(friendsData);
 
       // console.log(currentFriend.name);
 
@@ -80,7 +88,7 @@ module.exports = function(app) {
 
     // Finally save the user's data to the database (this has to happen AFTER the check. otherwise,
     // the database will always return that the user is the user's best friend).
-    friends.push(userData);
+    friendsData.push(userData);
 
     // Return a JSON with the user's bestMatch. This will be used by the HTML in the next page
     res.json(bestMatch);
